@@ -20,13 +20,13 @@ public class OrganizationService {
 
     @Transactional
     public Organization createOrganization(final Organization organization) {
-        boolean emailExists = organizationRepository.findByEmail(organization.getEmail()).isPresent();
+        Organization existingOrg = organizationRepository.findByEmail(organization.getEmail());
 
-        if (emailExists) {
+        if (existingOrg != null) {
             throw new BadRequestServiceAlertException("Email already exists");
         }
 
-        return organizationRepository.save(organization);
+        return this.organizationRepository.save(organization);
     }
 
     public Organization retrieveOrganizationById(final String uuid) {
@@ -38,7 +38,7 @@ public class OrganizationService {
     }
 
     @Transactional
-    public Organization updateOrganizationById(final Organization organization, final String uuid) {
+    public Organization patchOrganizationById(final Organization organization, final String uuid) {
         final Organization existingOrganization = this.organizationRepository.findById(uuid).orElseThrow(() -> new BadRequestServiceAlertException(Constant.ID_DOES_NOT_EXIST));
         if (organization.getName() != null) {
             existingOrganization.setName(organization.getName());

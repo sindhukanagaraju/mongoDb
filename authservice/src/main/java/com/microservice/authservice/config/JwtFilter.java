@@ -1,5 +1,6 @@
 package com.microservice.authservice.config;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.microservice.authservice.service.JWTService;
 import com.microservice.authservice.service.MyUserDetailsService;
 import com.microservice.commonservice.util.Constant;
@@ -30,10 +31,10 @@ public class JwtFilter extends OncePerRequestFilter {
     private final MyUserDetailsService userDetailsService;
 
     public JwtFilter(
-            @Qualifier("authJwtService") JWTService jwtService,
-            ApplicationContext applicationContext,
-            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver,
-            MyUserDetailsService userDetailsService
+            @Qualifier("authJwtService") final JWTService jwtService,
+           final ApplicationContext applicationContext,
+            @Qualifier("handlerExceptionResolver") final HandlerExceptionResolver resolver,
+           final MyUserDetailsService userDetailsService
     ) {
         this.jwtService = jwtService;
         this.applicationContext = applicationContext;
@@ -42,33 +43,30 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;
 
         try {
-
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
-                email = jwtService.extractUserName(token);
+                email = this.jwtService.extractUserName(token);
             }
+            if (!ObjectUtil.isEmpty(email) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                final UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-                if (jwtService.validateToken(token, userDetails)) {
-                    System.out.println(userDetails);
+            if (jwtService.validateToken(token, userDetails)) {
                     final UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         } catch (ExpiredJwtException e) {
-            resolver.resolveException(request, response, null, new SecurityException(Constant.TOKEN_EXPIRED));
+           this.resolver.resolveException(request, response, null, new SecurityException(Constant.TOKEN_EXPIRED));
         } catch (Exception e) {
             e.printStackTrace();
-            resolver.resolveException(request, response, null, new SignatureException(Constant.INVALID_SIGNATURE));
+           this.resolver.resolveException(request, response, null, new SignatureException(Constant.INVALID_SIGNATURE));
         }
         filterChain.doFilter(request, response);
     }

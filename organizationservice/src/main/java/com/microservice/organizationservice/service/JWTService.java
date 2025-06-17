@@ -1,5 +1,6 @@
 package com.microservice.organizationservice.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.microservice.authservice.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,7 +30,7 @@ public class JWTService {
     public String generateToken(final User user) {
         final Map<String, Object> claims = new HashMap<>();
         claims.put("name", user.getName());
-        claims.put("role", "ROLE_" + user.getRole());
+        claims.put("role", user.getRole());
 
         return Jwts.builder()
                 .claims(claims)
@@ -49,17 +50,20 @@ public class JWTService {
                 .compact();
     }
 
-    public String extractUserName(String token) {
+    public String extractUserName(final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+    private <T> T extractClaim(final String token,final Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
-        if (token == null || token.isBlank()) {
+    private Claims extractAllClaims(final String token) {
+//        if (token == null || token.isBlank()) {
+//            throw new IllegalArgumentException("Token cannot be null or empty");
+//        }
+        if (ObjectUtil.isEmpty(token)) {
             throw new IllegalArgumentException("Token cannot be null or empty");
         }
 
@@ -70,16 +74,16 @@ public class JWTService {
                 .getBody();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(final String token,final UserDetails userDetails) {
         final String userName = extractUserName(token);
         return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(final String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 

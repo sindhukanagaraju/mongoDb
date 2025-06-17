@@ -9,7 +9,6 @@ import com.microservice.commonservice.dto.SignInRequestDTO;
 import com.microservice.commonservice.dto.SignUpDTO;
 import com.microservice.commonservice.dto.UserDetailDTO;
 import com.microservice.commonservice.util.Constant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,14 +18,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private MyUserDetailsService userDetailsService;
+    private final MyUserDetailsService userDetailsService;
+
+    public UserController(final UserService userService,final UserRepository userRepository,final MyUserDetailsService userDetailsService) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostMapping("/auth/signIn")
     public ResponseDTO signIn(@RequestBody final SignInRequestDTO signInDTO) {
@@ -39,12 +41,13 @@ public class UserController {
     }
 
     @GetMapping("/auth/user")
-    public ResponseEntity<UserDetailDTO> getUserByEmail(@RequestParam String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public ResponseEntity<UserDetailDTO> getUserByEmail(@RequestParam final String email) {
+        final User user = this.userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
 
-        UserDetailDTO dto = new UserDetailDTO(user.getName(), user.getEmail(), user.getRole());
+        final UserDetailDTO dto = new UserDetailDTO(user.getName(), user.getEmail(), user.getRole());
         return ResponseEntity.ok(dto);
     }
-
 }

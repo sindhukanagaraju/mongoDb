@@ -25,29 +25,37 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public UserService(JWTService jwtService, UserRepository userRepository, UserCredentialValidation userCredentialValidation) {
+    public UserService(final JWTService jwtService,final UserRepository userRepository,final UserCredentialValidation userCredentialValidation) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.userCredentialValidation = userCredentialValidation;
     }
-
 
     @Transactional
     public Map<String, String> signIn(final SignInRequestDTO signInDTO) {
         if (!userCredentialValidation.isValidEmail(signInDTO.getEmail())) {
             throw new BadRequestServiceAlertException("Invalid Email format");
         }
-        final User user = this.userRepository.findByEmail(signInDTO.getEmail()).orElseThrow(() -> new RuntimeException(Constant.INCORRECT_EMAIL));
+
+        final User user = this.userRepository.findByEmail(signInDTO.getEmail());
+        if (user == null) {
+            throw new RuntimeException(Constant.INCORRECT_EMAIL);
+        }
+
         if (!encoder.matches(signInDTO.getPassword(), user.getPassword())) {
             throw new RuntimeException(Constant.INCORRECT_PASSWORD);
         }
-        final String jwt = jwtService.generateToken(user);
-        final String refreshToken = jwtService.generateRefreshToken(user);
+
+        final String jwt = this.jwtService.generateToken(user);
+        final String refreshToken = this.jwtService.generateRefreshToken(user);
+
         final Map<String, String> jwtAuthResp = new HashMap<>();
         jwtAuthResp.put("token", jwt);
         jwtAuthResp.put("refreshToken", refreshToken);
+
         return jwtAuthResp;
     }
+
 
     public User customerCreate(final SignUpDTO signUpDTO) {
         if (!userCredentialValidation.isValidEmail(signUpDTO.getEmail())) {
@@ -59,7 +67,7 @@ public class UserService {
         final User user = new User();
         user.setName(signUpDTO.getName());
         user.setEmail(signUpDTO.getEmail());
-        user.setPassword(encoder.encode(signUpDTO.getPassword()));
+        user.setPassword(this.encoder.encode(signUpDTO.getPassword()));
         user.setRole(signUpDTO.getRole());
         user.setCreatedBy(signUpDTO.getCreatedBy());
 

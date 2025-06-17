@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class OrganizationController {
 
-
     private final OrganizationService organizationService;
 
-    public OrganizationController(OrganizationService organizationService) {
+    public OrganizationController(final OrganizationService organizationService) {
         this.organizationService = organizationService;
     }
 
@@ -38,9 +37,9 @@ public class OrganizationController {
     }
 
     @PreAuthorize("hasAnyAuthority('SUPER_ADMIN')")
-    @PutMapping("/organization/{uuid}")
-    public ResponseDTO updateOrganization(@PathVariable final String uuid, @RequestBody final Organization organization) {
-        return new ResponseDTO(HttpStatus.OK.value(), Constant.UPDATE, this.organizationService.updateOrganizationById(organization, uuid));
+    @PatchMapping("/organization/{uuid}")
+    public ResponseDTO patchOrganization(@PathVariable final String uuid, @RequestBody final Organization organization) {
+        return new ResponseDTO(HttpStatus.OK.value(), Constant.UPDATE, this.organizationService.patchOrganizationById(organization, uuid));
     }
 
     @PreAuthorize("hasAnyAuthority('SUPER_ADMIN')")

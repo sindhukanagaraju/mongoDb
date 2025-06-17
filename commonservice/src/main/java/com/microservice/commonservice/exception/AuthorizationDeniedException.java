@@ -1,7 +1,7 @@
 package com.microservice.commonservice.exception;
 
 public class AuthorizationDeniedException extends RuntimeException {
-    public AuthorizationDeniedException(String message) {
+    public AuthorizationDeniedException(final String message) {
         super(message);
     }
 }

@@ -38,13 +38,6 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
-		<!-- Common Module -->
-<!--		<dependency>-->
-<!--			<groupId>com.microservice</groupId>-->
-<!--			<artifactId>commonservice</artifactId>-->
-<!--			<version>0.0.1-SNAPSHOT</version>-->
-<!--		</dependency>-->
-
 		<!-- JSON Handling -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -107,12 +100,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Test Dependencies -->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-test</artifactId>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
@@ -124,6 +111,13 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.8.11</version> <!-- or latest -->
+		</dependency>
+
 	</dependencies>
 
 	<build>

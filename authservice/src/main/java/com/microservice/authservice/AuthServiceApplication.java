@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 @SpringBootApplication(
         scanBasePackages = "com.microservice",
         exclude = {SecurityAutoConfiguration.class})
-public class AuthserviceApplication {
+public class AuthServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthserviceApplication.class, args);
+        SpringApplication.run(AuthServiceApplication.class, args);
     }
 
 }

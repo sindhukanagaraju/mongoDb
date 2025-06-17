@@ -1,5 +1,6 @@
 package com.microservice.authservice.service;
 
+import com.microservice.authservice.entity.User;
 import com.microservice.authservice.repository.UserRepository;
 import com.microservice.commonservice.util.Constant;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        return this.userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException(Constant.USER_NOT_FOUND));
+        final User user = this.userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(Constant.USER_NOT_FOUND);
+        }
+        return user;
     }
 }
