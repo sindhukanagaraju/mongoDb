@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: changelog/202506041314_create_organization.yml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog/202506041315_insert_organization.yml
+      relativeToChangelogFile: true
+

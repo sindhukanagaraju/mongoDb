@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202506091006
+      author: sindhu
+      changes:
+        - insertOne:
+            collectionName: organization
+            document:
+                     uuid: "123e4567-e89b-12d3-a456-426614174001"
+                     name: "Infosys"
+                     email: "infosys@gmail.com"
+                     contact_number: "7654345654"
+                     industry_type: "IT and AccountManagement"

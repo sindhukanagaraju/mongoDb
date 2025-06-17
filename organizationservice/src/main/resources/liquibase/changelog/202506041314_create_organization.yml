@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202506091005
+      author: sindhu
+      changes:
+        - createCollection:
+            collectionName: organization

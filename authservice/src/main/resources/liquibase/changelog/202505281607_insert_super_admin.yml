@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202506091004
+      author: sindhu
+      changes:
+        - insertOne:
+            collectionName: user
+            document:
+              uuid: "dfcf4ec3-91e0-498d-82a8-8f06b3343ca1"
+              name: "Mohana"
+              email: "mohana@gmail.com"
+              password: "$2a$12$L/1PkwmlPdW3AMyDqwRhm.h9RU3b4k3caKyiu8tAg7n2UfHp5JBAW"
+              role: "SUPER_ADMIN"
+              createdAt:
+                $date: "2025-05-28T12:00:00Z"
+              createdBy: "system"

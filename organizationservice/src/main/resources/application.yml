@@ -1,0 +1,29 @@
+
+spring:
+  application:
+    name: organizationservice
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/organization_service
+
+  main:
+    allow-bean-definition-overriding: true
+
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+    enabled: true
+    url: "mongodb://root:test1234@localhost:27017/organization_service?authSource=organization_service"
+    driver: liquibase.ext.mongodb.database.MongoClientDriver
+    log-level: info
+server:
+  port: 8082
+  error:
+    include-stacktrace: never
+
+jwt:
+  secret: "RZsxWR2OkQzHZzNdu+aSsnktWyQ8WkQPR0r4RMJ8WGo="
+
+quarkus:
+  liquibase-mongodb:
+    migrate-at-start: true

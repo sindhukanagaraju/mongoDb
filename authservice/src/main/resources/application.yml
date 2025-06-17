@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: authservice
+
+  data:
+    mongodb:
+      uri: mongodb://root:test1234@localhost:27017/auth_service?authSource=auth_service
+
+liquibase:
+  enabled: true
+  change-log: classpath:liquibase/master.yml
+  url: mongodb://root:test1234@localhost:27017/auth_service?authSource=auth_service
+  driver: liquibase.ext.mongodb.database.MongoClientDriver
+  log-level: info
+
+server:
+  port: 8081
+  error:
+    include-stacktrace: always
+
+logging:
+  level:
+    liquibase: DEBUG
+    org.springframework.boot.autoconfigure.liquibase: DEBUG
+
+jwt:
+  secret: RZsxWR2OkQzHZzNdu+aSsnktWyQ8WkQPR0r4RMJ8WGo=

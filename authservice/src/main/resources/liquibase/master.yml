@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: changelog/202505281606_create_super_admin.yml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog/202505281607_insert_super_admin.yml
+      relativeToChangelogFile: true
+
+
